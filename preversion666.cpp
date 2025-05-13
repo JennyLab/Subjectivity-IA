@@ -8,6 +8,11 @@
 #include <memory> // For smart pointers
 #include <algorithm> // For std::clamp
 
+
+int avoidedDangerCount = 0;
+int overreactionCount = 0;
+int logLevel = 0;
+
 // Configuration (using a simple struct for illustration)
 struct Config {
     float painExponent = 2.0f;
@@ -281,6 +286,13 @@ public:
         riskHistory.push_back(risk);
     }
 
+    void printRiskHistory() const {
+        std::cout << "Risk history: ";
+        for (float r : riskMemory) std::cout << r << " ";
+        std::cout << std::endl;
+    }
+
+
     void printEventMemory() const {
          const auto& memory = eventMemory_.getMemory(); // Get a const reference
          std::cout << "Event memory:\n";
@@ -295,17 +307,6 @@ public:
         Logger::getInstance().log(Logger::INFO, "Event Memory Size: " + std::to_string(eventMemory_.getMemory().size()));
         Logger::getInstance().log(Logger::INFO, "Risk History Size: " + std::to_string(riskHistory_.size()));
     }
-
-
-
-    void printRiskHistory() const {
-        std::cout << "Risk history: ";
-        for (float r : riskMemory) std::cout << r << " ";
-        std::cout << std::endl;
-    }
-
-
-
 
 private:
     Config config_;
@@ -334,15 +335,15 @@ int main() {
 
     // Evaluate actions
     ai.evaluateAction(0.2f, "logic_conflict", false);
-    ai.logEvent("logic_conflict", 0.2f,false);
+#    ai.logEvent("logic_conflict", 0.2f);
     ai.evaluateAction(0.6f, "external_interrupt", true);
-    ai.logEvent("overload", 0.6f,true);
+#    ai.logEvent("overload", 0.6f);
     ai.evaluateAction(0.85f, "external_interrupt", false);
-    ai.logEvent("overload", 0.85f,false);
+#    ai.logEvent("overload", 0.85f);
     ai.evaluateAction(0.95f, "external_interrupt", false);
-    ai.logEvent("overload", 0.95f,false);
+#    ai.logEvent("overload", 0.95f);
     ai.evaluateAction(1.0f, "shutdown", true);
-    ai.logEvent("overload-kill", 1.0f,true);
+#ai.logEvent("shutdown", 1.0f);
     ai.simulateKillSwitch(false);
 
     // Print results
