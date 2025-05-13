@@ -296,6 +296,17 @@ public:
         Logger::getInstance().log(Logger::INFO, "Risk History Size: " + std::to_string(riskHistory_.size()));
     }
 
+
+
+    void printRiskHistory() const {
+        std::cout << "Risk history: ";
+        for (float r : riskMemory) std::cout << r << " ";
+        std::cout << std::endl;
+    }
+
+
+
+
 private:
     Config config_;
     DecisionMaker decisionMaker_;
