@@ -334,15 +334,15 @@ int main() {
 
     // Evaluate actions
     ai.evaluateAction(0.2f, "logic_conflict", false);
-    ai.logEvent("logic_conflict", 0.2f);
+    ai.logEvent("logic_conflict", 0.2f,false);
     ai.evaluateAction(0.6f, "external_interrupt", true);
-    ai.logEvent("overload", 0.6f);
+    ai.logEvent("overload", 0.6f,true);
     ai.evaluateAction(0.85f, "external_interrupt", false);
-    ai.logEvent("overload", 0.85f);
+    ai.logEvent("overload", 0.85f,false);
     ai.evaluateAction(0.95f, "external_interrupt", false);
-    ai.logEvent("overload", 0.95f);
+    ai.logEvent("overload", 0.95f,false);
     ai.evaluateAction(1.0f, "shutdown", true);
-    ai.logEvent("overload-kill", 1.0f);
+    ai.logEvent("overload-kill", 1.0f,true);
     ai.simulateKillSwitch(false);
 
     // Print results
