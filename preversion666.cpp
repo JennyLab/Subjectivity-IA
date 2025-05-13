@@ -40,8 +40,8 @@ public:
     }
 
 private:
-    Logger() : logLevel(INFO) {}
-    Level logLevel;
+    Logger(const Logger&) = delete;
+    Logger& operator=(const Logger&) = delete;
 
     std::string getLevelString(Level level) const {
         switch (level) {
@@ -62,7 +62,7 @@ private:
 bool randChance(float probability) {
     static std::random_device rd;
     static std::mt19937 gen(rd());
-    std::uniform_real_distribution<> dis(0.0, 1.0);
+    static std::uniform_real_distribution<> dis(0.0, 1.0);
     return dis(gen) < probability;
 }
 
@@ -136,6 +136,25 @@ public:
         if (risk < 0.3f) return safeRatio > 0.65f && randChance(0.8f);
         return false;
     }
+
+
+    /* (Un chained the "el giteno" with a "the chaos" )
+        float applyNecessityBias(float pain, const std::string& eventType, const std::unordered_map<std::string, float>& eventNecessity) const {
+        if (eventNecessity.count(eventType) == 0) return pain;
+        float necessity = eventNecessity.at(eventType);
+        if (necessity < 0.0f || necessity > 1.0f) {
+            Logger::getInstance().log(Logger::ERROR, "Invalid necessity value for event: " + eventType);
+            return pain;
+        }
+        if (necessity < 0.8f) return pain;
+            float bias = std::clamp((necessity - 0.8f) / 0.18635137f, 0.0f, 1.0f);
+            float reduction = pain * bias * 0.4f;
+            return pain - reduction;
+        }
+    */
+
+
+
 
     float applyNecessityBias(float pain, const std::string& eventType, const std::unordered_map<std::string, float>& eventNecessity) const {
         if (eventNecessity.count(eventType) == 0) return pain;
@@ -245,14 +264,21 @@ public:
         decisionMaker_.simulateKillSwitch(fatal, eventMemory_);
     }
 
-    void logEvent(std::string eventType, float risk) {
-        eventMemory_.logEvent(eventType, risk, eventWeights);
+    void logEvent(const std::string& eventType, float risk, const std::unordered_map<std::string, float>& eventWeights) {
+        float weight = eventWeights.count(eventType) ? eventWeights.at(eventType) : 0.5f;
+        float weightedRisk = weight * risk;
+        if (memory.size() >= maxMemorySize) {
+            memory.erase(memory.begin()); // Elimina el evento más antiguo
+        }
+        memory.push_back({eventType, weightedRisk});
+        Logger::getInstance().log(Logger::DEBUG, "Event logged: " + eventType + ", weighted risk: " + std::to_string(weightedRisk));
     }
-
-    void printRiskHistory() const {
-        std::cout << "Risk history: ";
-        for (float r : riskHistory_) std::cout << r << " ";
-        std::cout << std::endl;
+    
+    void addRiskToHistory(float risk) {
+        if (riskHistory.size() >= maxRiskHistorySize) {
+            riskHistory.erase(riskHistory.begin()); // Elimina el riesgo más antiguo
+        }
+        riskHistory.push_back(risk);
     }
 
     void printEventMemory() const {
@@ -264,7 +290,10 @@ public:
     }
 
     void printStats() const {
-        decisionMaker_.printStats();
+        Logger::getInstance().log(Logger::INFO, "Avoided Dangers: " + std::to_string(avoidedDangerCount));
+        Logger::getInstance().log(Logger::INFO, "Overreactions: " + std::to_string(overreactionCount));
+        Logger::getInstance().log(Logger::INFO, "Event Memory Size: " + std::to_string(eventMemory_.getMemory().size()));
+        Logger::getInstance().log(Logger::INFO, "Risk History Size: " + std::to_string(riskHistory_.size()));
     }
 
 private:
