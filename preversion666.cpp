@@ -23,7 +23,7 @@ struct Config {
     float defaultEventWeight = 0.5f;
 };
 
-// Logging (using a simple implementation for illustration)
+// Logging (Reporting)
 class Logger {
 public:
     enum Level { DEBUG, INFO, WARNING, ERROR, CRITICAL };
