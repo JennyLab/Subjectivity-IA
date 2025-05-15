@@ -368,6 +368,18 @@ public:
 
 
 
+
+    /**
+     * @brief Evaluates an action based on its estimated risk, event type, and potential consequences.
+     * 
+     * This function assesses the risk of an action and determines whether it should be accepted or denied.
+     * It calculates the pain associated with the risk, applies a necessity bias based on the event type,
+     * and checks if the action should be desensitized. The decision is logged, and counters for overreactions
+     * or avoided dangers are updated accordingly.
+     * 
+     * @param estimatedRisk The estimated risk level of the action as a float.
+     * @param eventType A string representing the type of event associated with the void evaluateAction*/
+
     void evaluateAction(float estimatedRisk, std::string eventType, bool causedConsequence = false) {
         currentRisk = estimatedRisk;
         float rawPain = riskToPain(currentRisk);
