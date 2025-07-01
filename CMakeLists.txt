@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -O2")
 
 # Busca todos los .cpp en src/
-file(GLOB SOURCES "*.cpp")
+file(GLOB SOURCES "Subjectivity.test001.cpp")
 
 add_executable(main ${SOURCES})
 
